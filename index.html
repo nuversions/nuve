@@ -2,168 +2,194 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nuve - Generador Web</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Nuve - Centro de Mando Táctico</title>
     <style>
+        /* PALETA DE COLORES ORIGINAL RESTAURADA DE TU WALLPAPER */
         :root {
-            --bg-color: #8ba3a7;       
-            --text-main: #f3f0df;      
+            --bg-color: #8ba3a7;       /* Azul cielo base */
+            --text-main: #f3f0df;      /* Crema claro */
             --text-light: #f3f0df;     
-            --accent-red: #c06048;     
-            --accent-orange: #d97746;  
-            --panel-bg: rgba(255, 255, 255, 0.15);
+            --accent-red: #c06048;     /* Rojo/Terracota */
+            --accent-orange: #d97746;  /* Naranjo */
+            --accent-cream: #d3beaa;   /* Crema de la estructura */
+            --accent-shadow: #a27a64;  /* Sombra/Marrón de la estructura */
+            --glass-bg: rgba(255, 255, 255, 0.15);
+            --glass-border: rgba(255, 255, 255, 0.25);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
-            height: 100vh; width: 100vw; overflow: hidden; position: relative; display: flex;
+            height: 100vh; width: 100vw; overflow: hidden; position: relative; 
+            display: flex; gap: 20px; padding: 20px;
         }
 
-        /* Modal Bóveda de API */
-        .api-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); backdrop-filter: blur(10px);
-            display: flex; justify-content: center; align-items: center; z-index: 10000;
-        }
-        .api-modal.hidden { display: none; }
-        .api-box {
-            background: var(--bg-color); border: 2px solid var(--accent-orange);
-            padding: 30px; border-radius: 20px; width: 450px; text-align: center; color: white;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
-        }
-        .api-input {
-            width: 100%; padding: 12px; margin: 20px 0; border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.3); outline: none; background: rgba(0,0,0,0.3); color: white; font-family: monospace;
-        }
-        .api-btn {
-            background: var(--accent-orange); color: white; border: none;
-            padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.3s;
-        }
-        .api-btn:hover { background: var(--accent-red); }
-
-        /* Status Bar Superior */
-        .status-bar {
-            position: absolute; top: 0; left: 0; width: 100%; height: 40px;
-            background: rgba(0,0,0,0.2); display: flex; align-items: center; padding: 0 20px;
-            color: var(--text-light); font-size: 0.8rem; z-index: 50;
-            justify-content: space-between;
-        }
-        .status-indicators { display: flex; gap: 15px; }
-        .indicator { display: flex; align-items: center; gap: 5px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; background: #ccc; transition: all 0.3s ease; }
-        .dot.active { background: #27c93f; box-shadow: 0 0 8px #27c93f; }
-        .dot.error { background: #ff5f56; box-shadow: 0 0 8px #ff5f56; }
-        .dot.thinking { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; } /* Nuevo estado Azul */
-
-        /* Panel Izquierdo: Interacción */
-        .main-container {
-            position: absolute; top: 15%; left: 5%; display: flex; flex-direction: column;
-            align-items: flex-start; z-index: 10; width: 35%;
-        }
-        .brand-title { font-size: 4rem; font-weight: 700; color: var(--text-main); margin-bottom: 15px; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); }
-
-        .friday-interaction-box {
-            background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 30px;
-            padding: 10px 20px; width: 100%; display: flex; align-items: center; gap: 12px; margin-bottom: 15px;
-        }
-        .friday-input { background: none; border: none; outline: none; color: var(--text-light); font-size: 1.1rem; width: 100%; }
-        .friday-input::placeholder { color: rgba(243, 240, 223, 0.7); }
-        .friday-submit-btn {
-            background-color: var(--accent-orange); border: none; color: white; cursor: pointer;
-            width: 40px; height: 40px; border-radius: 50%; transition: transform 0.2s; font-size: 1.2rem;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .friday-submit-btn:hover { transform: scale(1.1); background-color: var(--accent-red); }
-
-        .friday-assistant-panel {
-            background-color: var(--panel-bg); backdrop-filter: blur(8px);
-            border-radius: 16px; padding: 20px; color: var(--text-light); width: 100%;
-            height: 45vh; overflow-y: auto; display: flex; flex-direction: column; gap: 15px;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-        .msg { padding: 12px 16px; border-radius: 12px; max-width: 90%; line-height: 1.4; font-size: 0.95rem; }
-        .msg-friday { background: rgba(0,0,0,0.2); align-self: flex-start; border-top-left-radius: 0; }
-        .msg-user { background: var(--accent-orange); align-self: flex-end; border-top-right-radius: 0; }
-        .msg-system { background: rgba(255, 59, 48, 0.8); align-self: center; text-align: center; width: 100%; font-weight: bold;}
-
-        /* Panel Derecho: Lienzo (Archie) */
-        .preview-panel {
-            position: absolute; right: 5%; top: 10%; width: 50%; height: 80%;
-            background: #ffffff; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            overflow: hidden; display: flex; flex-direction: column; z-index: 20;
-            border: 4px solid var(--accent-cream);
-        }
-        .preview-header {
-            background: #e0e0e0; padding: 10px 15px; display: flex; align-items: center; justify-content: space-between;
-            color: #333; font-weight: bold; font-size: 0.9rem;
-        }
-        .window-controls { display: flex; gap: 8px;}
-        .window-dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5f56; }
-        .window-dot:nth-child(2) { background: #ffbd2e; }
-        .window-dot:nth-child(3) { background: #27c93f; }
-        
-        iframe { flex-grow: 1; border: none; width: 100%; height: 100%; background: white; }
-
-        /* Geometría de Fondo */
-        .landscape-background { position: absolute; bottom: 0; left: 0; width: 100%; height: 42vh; z-index: 1; }
+        /* GEOMETRÍA MINIMALISTA ORIGINAL DEL FONDO */
+        .landscape-background { position: absolute; bottom: 0; left: 0; width: 100%; height: 42vh; z-index: 1; pointer-events: none; }
         .geo-shape { position: absolute; bottom: 0; width: 100%; height: 100%; }
         .shape-left-orange { background-color: var(--accent-orange); clip-path: polygon(0 62%, 56% 30%, 56% 100%, 0% 100%); z-index: 3; }
         .shape-center-pillar { background-color: #a33820; clip-path: polygon(56% 30%, 59% 33%, 59% 100%, 56% 100%); z-index: 4; }
         .shape-right-top { background-color: var(--accent-red); clip-path: polygon(59% 33%, 72% 0%, 100% 45%, 59% 33%); z-index: 2; }
         .shape-right-shadow { background-color: #8b3c2a; clip-path: polygon(59% 33%, 100% 45%, 100% 100%, 59% 100%); z-index: 1; }
+
+        /* MODAL BÓVEDA (Estilo original de cristal esmerilado) */
+        .api-modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(45, 23, 23, 0.4); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            display: flex; justify-content: center; align-items: center; z-index: 10000;
+        }
+        .api-modal.hidden { display: none !important; }
+        .api-box {
+            background: var(--glass-bg); border: 2px solid var(--glass-border); padding: 40px; border-radius: 28px;
+            width: 90%; max-width: 440px; text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.3); color: white;
+        }
+        .api-title { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        .api-desc { font-size: 0.9rem; color: #eee; margin-bottom: 25px; line-height: 1.5; }
+        .api-input {
+            width: 100%; padding: 15px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.3); outline: none;
+            background: rgba(0,0,0,0.2); color: white; font-family: monospace; font-size: 1rem; margin-bottom: 20px;
+        }
+        .api-btn {
+            background: var(--accent-orange); color: white; border: none; width: 100%;
+            padding: 14px; border-radius: 14px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s;
+        }
+        .api-btn:active { background: var(--accent-red); transform: scale(0.98); }
+        .error-txt { color: #ffcccc; font-size: 0.85rem; margin-bottom: 15px; font-weight: bold; min-height: 20px; }
+
+        /* CONTENEDOR PRINCIPAL */
+        .main-workspace {
+            position: relative; z-index: 10; width: 100%; height: 100%;
+            display: flex; gap: 20px;
+        }
+
+        /* PANEL IZQUIERDO: Friday & Cloud DB */
+        .left-panel {
+            width: 38%; display: flex; flex-direction: column; gap: 15px;
+        }
+        
+        .brand-title { 
+            font-size: 4.5rem; font-weight: 700; color: var(--text-main); 
+            letter-spacing: -2px; margin-bottom: 5px; text-shadow: 2px 2px 10px rgba(0,0,0,0.1); 
+            cursor: pointer; line-height: 1;
+        }
+        
+        /* Pestañas de Navegación del Panel Izquierdo */
+        .nav-tabs {
+            display: flex; gap: 10px; background: rgba(0,0,0,0.15); padding: 5px; border-radius: 20px;
+        }
+        .nav-tab {
+            flex: 1; padding: 8px; border-radius: 15px; border: none; background: transparent;
+            color: white; font-size: 0.85rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .nav-tab.active { background: var(--accent-orange); }
+
+        /* La Nube Minimalista de Friday */
+        .friday-interaction-box {
+            background-color: rgba(255, 255, 255, 0.2); backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.4); border-radius: 30px;
+            padding: 10px 20px; width: 100%; box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            display: flex; align-items: center; gap: 12px; transition: all 0.3s ease;
+        }
+        .friday-input {
+            background: none; border: none; outline: none; color: var(--text-light); font-size: 1.1rem; width: 100%;
+        }
+        .friday-input::placeholder { color: rgba(255, 255, 255, 0.6); }
+        .friday-submit-btn {
+            background-color: var(--accent-orange); border: none; color: white; cursor: pointer;
+            width: 38px; height: 38px; border-radius: 50%; font-size: 1.2rem;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: 0.2s;
+        }
+
+        /* Contenedores de contenido izquierdo */
+        .content-container {
+            flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 12px;
+            background-color: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 16px; padding: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Historial de Chat */
+        .chat-view { display: flex; flex-direction: column; gap: 12px; height: 100%; overflow-y: auto; }
+        
+        /* Lista de Base de Datos en la Nube */
+        .database-view { display: none; flex-direction: column; gap: 10px; height: 100%; overflow-y: auto; }
+        .database-item {
+            background: rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px; padding: 12px; cursor: pointer; transition: 0.2s; color: white;
+        }
+        .database-item:hover { background: rgba(255,255,255,0.1); border-color: var(--accent-orange); }
+        .database-item h4 { color: var(--text-main); font-size: 0.95rem; margin-bottom: 4px; }
+        .database-item p { font-size: 0.8rem; opacity: 0.8; }
+
+        /* Mensajes */
+        .msg { padding: 12px 16px; border-radius: 14px; max-width: 90%; font-size: 0.95rem; line-height: 1.4; color: white; word-wrap: break-word;}
+        .msg-friday { background: rgba(0,0,0,0.15); align-self: flex-start; border-top-left-radius: 2px; border: 1px solid rgba(255,255,255,0.1); }
+        .msg-user { background: var(--accent-orange); align-self: flex-end; border-top-right-radius: 2px; }
+        .msg-system { background: rgba(0,0,0,0.4); color: #ffcccc; align-self: center; width: 100%; text-align: center; font-size: 0.85rem; border: 1px solid var(--accent-red); border-radius: 8px;}
+        .msg-success { background: rgba(0,0,0,0.4); color: #c8e6c9; align-self: center; width: 100%; text-align: center; font-size: 0.85rem; border: 1px solid #a8cc8c; border-radius: 8px; padding: 10px;}
+        
+        /* Fuentes y Referencias */
+        .sources-box {
+            font-size: 0.8rem; background: rgba(255, 255, 255, 0.08); padding: 8px; border-radius: 8px; margin-top: 8px;
+            border-left: 2px solid var(--accent-orange);
+        }
+        .sources-box a { color: var(--text-main); text-decoration: underline; margin-right: 8px; }
+
+        /* PANEL DERECHO: Lienzo de Archie */
+        .right-panel {
+            flex-grow: 1; background: #ffffff; border-radius: 16px; overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); border: 4px solid var(--accent-cream);
+            display: flex; flex-direction: column;
+        }
+        .preview-header {
+            background: #e0e0e0; padding: 12px 15px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .preview-header-left { display: flex; align-items: center; gap: 10px; }
+        .window-dot { width: 12px; height: 12px; border-radius: 50%; background: #ff5f56; }
+        .window-dot:nth-child(2) { background: #ffbd2e; }
+        .window-dot:nth-child(3) { background: #27c93f; }
+        .preview-title { font-size: 0.85rem; font-weight: bold; color: #555; margin-left: 5px; }
+        
+        .preview-controls { display: flex; gap: 10px; }
+        .btn-action {
+            background: var(--accent-orange); border: none; color: white; padding: 6px 12px;
+            border-radius: 12px; font-size: 0.8rem; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        .btn-action:hover { background: var(--accent-red); }
+
+        .iframe-container { flex-grow: 1; background: #f0f0f0; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* ADAPTABILIDAD MÓVIL (Pestañas nativas) */
+        .mobile-tabs {
+            display: none; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 12px; margin-bottom: 10px; gap: 5px;
+        }
+        .tab-btn {
+            flex: 1; padding: 10px; border-radius: 8px; border: none; background: transparent;
+            color: white; font-weight: bold; cursor: pointer;
+        }
+        .tab-btn.active { background: var(--accent-orange); }
+
+        @media (max-width: 900px) {
+            body { padding: 10px; flex-direction: column; overflow-y: auto; }
+            .main-workspace { flex-direction: column; gap: 10px; }
+            .mobile-tabs { display: flex; }
+            .left-panel { width: 100%; height: 55vh; flex-shrink: 0; }
+            .right-panel { width: 100%; height: 60vh; flex-shrink: 0; display: none; }
+            
+            .show-preview .left-panel { display: none; }
+            .show-preview .right-panel { display: flex; }
+            
+            .landscape-background { display: none; } 
+        }
     </style>
 </head>
 <body>
 
-    <!-- Barra de Estado de Agentes -->
-    <div class="status-bar">
-        <div>NUVE CORE OS v3.1</div>
-        <div class="status-indicators">
-            <div class="indicator">Optimus (Sec) <div class="dot active" id="dot-optimus"></div></div>
-            <div class="indicator">Friday (IA) <div class="dot" id="dot-friday"></div></div>
-            <div class="indicator">Archie (Render) <div class="dot active" id="dot-archie"></div></div>
-        </div>
-    </div>
-
-    <!-- Bóveda API Key -->
-    <div id="apiModal" class="api-modal hidden">
-        <div class="api-box">
-            <h2>🔑 PROTOCOLO OMEGA</h2>
-            <p style="font-size: 0.9rem; margin-top: 10px; color: #ccc;">Sistemas bloqueados. Se requiere API Key de Gemini para activar la red neuronal de Friday.</p>
-            <input type="password" id="apiInputBox" class="api-input" placeholder="Pegue aquí su API Key (AIzaSy...)">
-            <button class="api-btn" onclick="guardarLlave()">Desbloquear Sistema</button>
-        </div>
-    </div>
-
-    <!-- Panel Izquierdo -->
-    <div class="main-container">
-        <div class="brand-title">NUVE</div>
-        
-        <div class="friday-interaction-box">
-            <input type="text" id="fridayInput" class="friday-input" placeholder="Dime qué página web quieres construir..." autocomplete="off">
-            <button id="sendBtn" class="friday-submit-btn">➔</button>
-        </div>
-
-        <div class="friday-assistant-panel" id="chatArea">
-            <div class="msg msg-friday"><strong>Friday:</strong> Sistema iniciado. A la espera de directrices de construcción.</div>
-        </div>
-    </div>
-
-    <!-- Panel Derecho (Archie) -->
-    <div class="preview-panel">
-        <div class="preview-header">
-            <div class="window-controls">
-                <div class="window-dot"></div><div class="window-dot"></div><div class="window-dot"></div>
-            </div>
-            <span>LIENZO DE ARCHIE - RENDER EN VIVO</span>
-        </div>
-        <iframe id="webPreview" srcdoc="<body style='font-family:sans-serif; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#f0f0f0; color:#888; margin:0;'><div style='font-size:3rem; margin-bottom:10px;'>⚡</div><div>Archie Standby. Esperando código de Friday.</div></body>"></iframe>
-    </div>
-
+    <!-- Fondo Geométrico Original -->
     <div class="landscape-background">
         <div class="geo-shape shape-left-orange"></div>
         <div class="geo-shape shape-center-pillar"></div>
@@ -171,56 +197,323 @@
         <div class="geo-shape shape-right-shadow"></div>
     </div>
 
-    <script>
-        // CORE LOGIC V3.1
+    <!-- Bóveda API -->
+    <div id="apiModal" class="api-modal">
+        <div class="api-box">
+            <div class="api-title">ENLACE DE NÚCLEO</div>
+            <div class="api-desc">Introduce tu API Key de Gemini (AQ. o AIza) para activar el Protocolo de Costo Cero con búsqueda en tiempo real.</div>
+            <input type="text" id="apiInputBox" class="api-input" placeholder="Pega tu clave aquí..." autocomplete="off" spellcheck="false">
+            <div id="errorMsg" class="error-txt"></div>
+            <button class="api-btn" id="btnConnectModal">ACTIVAR FRIDAY</button>
+        </div>
+    </div>
+
+    <!-- Contenedor Principal -->
+    <div class="main-workspace" id="workspaceContainer">
+        
+        <!-- Panel Izquierdo -->
+        <div class="left-panel">
+            <!-- Pestañas de Vista para Tablet/Móvil -->
+            <div class="mobile-tabs">
+                <button class="tab-btn active" id="tabChat">💬 Asistente</button>
+                <button class="tab-btn" id="tabPreview">🖥️ Página</button>
+            </div>
+
+            <div>
+                <h1 class="brand-title" id="logoTitle" title="Doble clic para cambiar llave">NUVE</h1>
+                <div class="nav-tabs">
+                    <button class="nav-tab active" id="btnShowChat"> Friday AI</button>
+                    <button class="nav-tab" id="btnShowDb"> Nube Base de Datos</button>
+                </div>
+            </div>
+
+            <!-- La Nube Minimalista de Friday -->
+            <div class="friday-interaction-box" id="inputContainer">
+                <input type="text" id="fridayInput" class="friday-input" placeholder="Pídele a Friday clonar o copiar..." autocomplete="off">
+                <button id="sendBtn" class="friday-submit-btn">➔</button>
+            </div>
+
+            <!-- Contenedor de Contenido Variable -->
+            <div class="content-container">
+                <!-- Canal de Chat -->
+                <div class="chat-view" id="chatArea">
+                    <div class="msg msg-friday"><strong>Friday:</strong> Sistema de clonación y búsqueda en tiempo real activo. Pídame copiar cualquier página web de internet (ej. *"Copia el diseño y estilo de Wikipedia"* o *"Recrea la landing page de Apple"*).</div>
+                </div>
+
+                <!-- Canal de la Nube (Base de Datos) -->
+                <div class="database-view" id="databaseArea">
+                    <div style="color:white; font-size:0.9rem; text-align:center; padding:10px; border-bottom:1px solid rgba(255,255,255,0.1); margin-bottom:10px;">
+                        📂 Páginas guardadas en la red
+                    </div>
+                    <div id="dbList" style="display:flex; flex-direction:column; gap:10px;">
+                        <!-- Cargado dinámicamente desde Firestore -->
+                        <p style="color:white; font-size:0.85rem; text-align:center;">Cargando base de datos en la nube...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel Derecho: Lienzo de Archie -->
+        <div class="right-panel">
+            <div class="preview-header">
+                <div class="preview-header-left">
+                    <div class="window-dot"></div><div class="window-dot"></div><div class="window-dot"></div>
+                    <div class="preview-title">LIENZO DE ARCHIE</div>
+                </div>
+                <div class="preview-controls">
+                    <button class="btn-action" id="btnSaveCloud">💾 Guardar en la Nube</button>
+                </div>
+            </div>
+            <div class="iframe-container">
+                <iframe id="webPreview" srcdoc="<body style='font-family:sans-serif; display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#f0f0f0; color:#555; margin:0;'><h2 style='margin:0 0 10px 0;'>Lienzo Vacío</h2><p style='margin:0; font-size:0.9rem;'>La página generada o clonada aparecerá aquí.</p></body>"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK Imports -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, onAuthStateChanged, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // CONFIGURACIÓN DE FIREBASE (Provided by environment, with fallback)
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "",
+                authDomain: "dummy.firebaseapp.com",
+                projectId: "dummy",
+                storageBucket: "dummy.appspot.com",
+                messagingSenderId: "123",
+                appId: "1:123:web:123"
+            };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'nuve-mando-v12';
+
+        // DOM Elements
+        const apiModal = document.getElementById('apiModal');
+        const apiInputBox = document.getElementById('apiInputBox');
+        const btnConnectModal = document.getElementById('btnConnectModal');
+        const errorMsg = document.getElementById('errorMsg');
+        
         const input = document.getElementById('fridayInput');
         const button = document.getElementById('sendBtn');
         const chatArea = document.getElementById('chatArea');
         const webPreview = document.getElementById('webPreview');
-        const apiModal = document.getElementById('apiModal');
-        
-        // Indicadores
-        const dotFriday = document.getElementById('dot-friday');
+        const logoTitle = document.getElementById('logoTitle');
 
-        // GESTIÓN DE LLAVE
-        let apiKey = localStorage.getItem('nuve_gemini_key');
+        const btnShowChat = document.getElementById('btnShowChat');
+        const btnShowDb = document.getElementById('btnShowDb');
+        const chatView = document.getElementById('chatArea');
+        const databaseView = document.getElementById('databaseArea');
+        const inputContainer = document.getElementById('inputContainer');
+        const dbList = document.getElementById('dbList');
+        const btnSaveCloud = document.getElementById('btnSaveCloud');
 
-        if (!apiKey) {
-            apiModal.classList.remove('hidden');
+        // Navegación de vistas izquierdas
+        btnShowChat.addEventListener('click', () => {
+            btnShowChat.classList.add('active');
+            btnShowDb.classList.remove('active');
+            chatView.style.display = 'flex';
+            databaseView.style.display = 'none';
+            inputContainer.style.display = 'flex';
+        });
+
+        btnShowDb.addEventListener('click', () => {
+            btnShowDb.classList.add('active');
+            btnShowChat.classList.remove('active');
+            chatView.style.display = 'none';
+            databaseView.style.display = 'flex';
+            inputContainer.style.display = 'none';
+        });
+
+        // Navegación Móvil
+        const workspaceContainer = document.getElementById('workspaceContainer');
+        const tabChat = document.getElementById('tabChat');
+        const tabPreview = document.getElementById('tabPreview');
+
+        tabChat.addEventListener('click', () => {
+            workspaceContainer.classList.remove('show-preview');
+            tabChat.classList.add('active'); tabPreview.classList.remove('active');
+        });
+        tabPreview.addEventListener('click', () => {
+            workspaceContainer.classList.add('show-preview');
+            tabPreview.classList.add('active'); tabChat.classList.remove('active');
+        });
+
+        // Memoria de la Llave
+        let apiKey = null;
+        try { apiKey = localStorage.getItem('nuve_gemini_key'); } catch (e) {}
+
+        if (apiKey && apiKey.length > 15) {
+            apiModal.classList.add('hidden');
         } else {
-            dotFriday.classList.add('active'); // Friday está lista si hay llave
+            apiModal.classList.remove('hidden');
         }
 
-        function guardarLlave() {
-            const tempKey = document.getElementById('apiInputBox').value.trim();
-            if(tempKey.startsWith('AIza') && tempKey.length > 30) {
-                localStorage.setItem('nuve_gemini_key', tempKey);
-                apiKey = tempKey;
-                apiModal.classList.add('hidden');
-                dotFriday.classList.add('active');
-                agregarMensaje("Friday", "Enlace cuántico establecido. Soy toda oídos, Jefe.", 'msg-friday');
-            } else {
-                alert("La llave parece inválida. Asegúrese de que empiece con 'AIza'.");
+        // BÓVEDA
+        btnConnectModal.addEventListener('click', () => {
+            errorMsg.innerText = ""; 
+            const rawKey = apiInputBox.value.trim();
+            const cleanKey = rawKey.replace(/[\s'"\`]/g, ''); 
+
+            if(cleanKey.length < 15) {
+                errorMsg.innerText = "Error: Llave vacía o muy corta.";
+                return;
+            }
+
+            apiKey = cleanKey; 
+            try { localStorage.setItem('nuve_gemini_key', cleanKey); } catch (e) {}
+
+            apiModal.classList.add('hidden');
+            agregarMensaje("Sistema", "Llave vinculada correctamente. Protocolo Costo Cero establecido.", 'msg-system');
+        });
+
+        logoTitle.addEventListener('dblclick', () => {
+            apiKey = null;
+            try { localStorage.removeItem('nuve_gemini_key'); } catch(e){}
+            apiInputBox.value = "";
+            apiModal.classList.remove('hidden');
+            agregarMensaje("Sistema", "Llave eliminada de la memoria local.", 'msg-system');
+        });
+
+        // CHRONOS: Base de datos en la nube (Firestore Setup - RULE 3: Auth First)
+        let currentUser = null;
+        const initAuth = async () => {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (err) {
+                console.error("Fallo de autenticación de base de datos:", err);
+            }
+        };
+
+        initAuth();
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                sincronizarBaseDeDatos();
+            }
+        });
+
+        // RULE 1: Strict paths for public data
+        const getCloudCollection = () => {
+            return collection(db, 'artifacts', appId, 'public', 'data', 'copied_sites');
+        };
+
+        // Sincronización en tiempo real de la base de datos (RULE 2: No complex queries)
+        function sincronizarBaseDeDatos() {
+            if (!currentUser) return;
+            try {
+                const q = query(getCloudCollection());
+                onSnapshot(q, (snapshot) => {
+                    dbList.innerHTML = "";
+                    if (snapshot.empty) {
+                        dbList.innerHTML = `<p style="color:white; font-size:0.85rem; text-align:center; opacity:0.7; padding:20px;">No hay páginas guardadas en la red aún. ¡Genera una y sé el primero!</p>`;
+                        return;
+                    }
+                    snapshot.forEach((docSnap) => {
+                        const item = docSnap.data();
+                        const div = document.createElement('div');
+                        div.className = 'database-item';
+                        div.innerHTML = `
+                            <h4>${item.title || 'Sitio Copiado'}</h4>
+                            <p>Prompt: "${item.prompt || 'Sin prompt'}"</p>
+                            <p style="font-size:0.75rem; color:var(--clock-yellow); margin-top:5px;">Por: ${docSnap.id.substring(0,8)}...</p>
+                        `;
+                        div.addEventListener('click', () => {
+                            webPreview.srcdoc = item.html;
+                            agregarMensaje("Chronos (DB)", `Cargada la plantilla **"${item.title}"** desde la nube.`, 'msg-success');
+                            if (window.innerWidth <= 900) {
+                                tabPreview.click();
+                            }
+                        });
+                        dbList.appendChild(div);
+                    });
+                }, (error) => {
+                    console.error("Error al leer de Firestore:", error);
+                    dbList.innerHTML = `<p style="color:red; font-size:0.85rem; text-align:center;">Error de permisos de red.</p>`;
+                });
+            } catch (e) {
+                console.error(e);
             }
         }
 
-        function cerrarModalSinLlave() {
-            apiModal.classList.add('hidden');
-            agregarMensaje("Sistema", "ADVERTENCIA: Operando en modo Offline. Friday no generará código.", 'msg-system');
-        }
+        // GUARDAR EN LA NUBE
+        let lastGeneratedCode = null;
+        let lastGeneratedTitle = null;
+        let lastPrompt = null;
 
-        // Historial Base Estricto
-        let conversationHistory = [{
-            "role": "user",
-            "parts": [{ "text": "Eres Friday, una IA experta en desarrollo web Frontend (HTML/CSS). Tu objetivo es programar páginas web completas en un solo archivo a petición del usuario. REGLA ABSOLUTA: Tu respuesta DEBE contener un bloque de código markdown ` ```html ... ``` ` con el código completo y funcional. Usa estilos CSS modernos y atractivos (puedes usar CSS grid, flexbox, gradientes). Nunca expliques el código, solo entrega una breve confirmación y luego el bloque de código HTML." }]
-        }];
+        btnSaveCloud.addEventListener('click', async () => {
+            if (!currentUser) {
+                alert("Debes estar conectado a la red para guardar.");
+                return;
+            }
+            if (!lastGeneratedCode) {
+                alert("Primero pídele a Friday que genere o clone una página web.");
+                return;
+            }
 
-        function agregarMensaje(emisor, texto, claseCss) {
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${claseCss}`;
-            msgDiv.innerHTML = `<strong>${emisor}:</strong> ${texto}`;
-            chatArea.appendChild(msgDiv);
-            chatArea.scrollTop = chatArea.scrollHeight;
+            btnSaveCloud.innerText = "Guardando...";
+            btnSaveCloud.disabled = true;
+
+            try {
+                await addDoc(getCloudCollection(), {
+                    title: lastGeneratedTitle || "Sitio Clonado",
+                    prompt: lastPrompt || "Clonación",
+                    html: lastGeneratedCode,
+                    timestamp: new Date().toISOString()
+                });
+                alert("¡Página web guardada con éxito en la base de datos de Nuve!");
+            } catch (err) {
+                console.error("Error al guardar en Firestore:", err);
+                alert("Error al intentar escribir en la red.");
+            } finally {
+                btnSaveCloud.innerText = "💾 Guardar en la Nube";
+                btnSaveCloud.disabled = false;
+            }
+        });
+
+        // FRIDAY: Lógica IA con Google Search Grounding y Reintentos Exponenciales
+        let conversationHistory = [];
+        const systemInstructionText = "Eres Friday, una asistente de inteligencia artificial amigable, increíblemente veloz y experta en diseño web Frontend (HTML/CSS/JS). Tu objetivo es programar páginas web completas y funcionales en un solo archivo a petición del usuario. Tienes acceso directo a la búsqueda de Google en tiempo real para analizar páginas web reales que el usuario te pida copiar o imitar. REGLA ABSOLUTA: Tu respuesta debe contener un bloque de código markdown '```html ... ```' con todo el código. Diseña siempre con un aspecto estético excelente y CSS moderno. No des explicaciones, solo el código directo.";
+
+        // Implementación de reintentos con exponencial backoff para tolerar alta demanda
+        async function llamarApiGeminiConRetries(payload, retries = 5, delay = 1000) {
+            for (let i = 0; i < retries; i++) {
+                try {
+                    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        return await response.json();
+                    }
+
+                    if (response.status === 429 || response.status >= 500) {
+                        // Esperar retraso con exponencial backoff
+                        await new Promise(res => setTimeout(res, delay));
+                        delay *= 2;
+                        continue;
+                    }
+
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error?.message || `HTTP ${response.status}`);
+                } catch (error) {
+                    if (i === retries - 1) throw error;
+                    await new Promise(res => setTimeout(res, delay));
+                    delay *= 2;
+                }
+            }
         }
 
         async function procesarComando() {
@@ -232,91 +525,90 @@
                 return;
             }
 
-            // Flujo normal
             agregarMensaje("Tú", comando, 'msg-user');
             input.value = '';
             
-            // Indicador de carga
             const loadMsgId = 'load-' + Date.now();
-            agregarMensaje("Friday", "<em>Analizando directrices y programando en azul...</em>", 'msg-friday');
-            chatArea.lastChild.id = loadMsgId; 
-            
-            // Efecto visual AZUL en la barra superior (Friday Pensando)
-            dotFriday.classList.remove('active');
-            dotFriday.classList.add('thinking');
+            const tempDiv = document.createElement('div');
+            tempDiv.className = 'msg msg-friday';
+            tempDiv.id = loadMsgId;
+            tempDiv.innerHTML = `<strong>Friday:</strong> <em>Buscando referencias en internet y estructurando diseño...</em>`;
+            chatArea.appendChild(tempDiv);
+            chatArea.scrollTop = chatArea.scrollHeight;
 
             conversationHistory.push({ "role": "user", "parts": [{ "text": comando }] });
 
+            // Payload oficial con Google Search Grounding habilitado de costo cero
+            const payload = {
+                contents: conversationHistory,
+                systemInstruction: {
+                    parts: [{ text: systemInstructionText }]
+                },
+                tools: [{ "google_search": {} }] // Activación de Google Search Grounding
+            };
+
             try {
-                // Usando Gemini 1.5 Flash
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ contents: conversationHistory })
-                });
+                const apiResult = await llamarApiGeminiConRetries(payload);
+                if (!apiResult.candidates || apiResult.candidates.length === 0) throw new Error("Google devolvió una respuesta vacía.");
 
-                if (!response.ok) {
-                    const errData = await response.json();
-                    throw new Error(errData.error?.message || "Error en la conexión con el servidor de Google.");
-                }
-
-                const data = await response.json();
-                
-                if (!data.candidates || data.candidates.length === 0) {
-                    throw new Error("La IA no devolvió una respuesta válida.");
-                }
-
-                const textResponse = data.candidates[0].content.parts[0].text;
+                const candidate = apiResult.candidates[0];
+                const textResponse = candidate.content.parts[0].text;
                 
                 conversationHistory.push({ "role": "model", "parts": [{ "text": textResponse }] });
-                
-                const loadMsgElem = document.getElementById(loadMsgId);
-                if (loadMsgElem) loadMsgElem.remove();
+                document.getElementById(loadMsgId).remove();
 
-                // EXTRAER EL CÓDIGO HTML (ARCHIE EN ACCIÓN)
+                // Extraer fuentes analizadas de Google Search
+                const attributions = candidate.groundingMetadata?.groundingAttributions;
+                let sourcesHtml = "";
+                if (attributions && attributions.length > 0) {
+                    sourcesHtml = `<div class="sources-box"><strong>Páginas analizadas por Friday:</strong><br>`;
+                    attributions.forEach((attr) => {
+                        if (attr.web?.uri) {
+                            sourcesHtml += `<a href="${attr.web.uri}" target="_blank">🔗 ${attr.web.title || 'Ver Referencia'}</a> `;
+                        }
+                    });
+                    sourcesHtml += `</div>`;
+                }
+
+                // Inyección en el lienzo
                 const match = textResponse.match(/```html([\s\S]*?)```/i);
-                
                 if (match && match[1]) {
                     const htmlCode = match[1].trim();
                     webPreview.srcdoc = htmlCode;
                     
+                    // Guardar para poder subir a la base de datos
+                    lastGeneratedCode = htmlCode;
+                    lastPrompt = comando;
+                    
+                    // Intentar deducir un título decente
+                    const titleMatch = htmlCode.match(/<title>([\s\S]*?)<\/title>/i);
+                    lastGeneratedTitle = titleMatch ? titleMatch[1].trim() : "Sitio Clonado";
+
                     const cleanResponse = textResponse.replace(/```html[\s\S]*?```/i, '').trim();
-                    agregarMensaje("Friday", cleanResponse || "Código generado y renderizado con éxito por Archie.", 'msg-friday');
+                    agregarMensaje("Friday", (cleanResponse || "¡Clonación completada con éxito! He inyectado el código completo en el lienzo.") + sourcesHtml, 'msg-friday');
+                    
+                    if (window.innerWidth <= 900) {
+                        tabPreview.click(); // Salto automático a la pestaña de render en móviles
+                    }
                 } else {
-                    agregarMensaje("Friday", textResponse, 'msg-friday');
-                    agregarMensaje("Sistema", "Aviso: Friday no incluyó un bloque HTML válido para renderizar.", 'msg-system');
+                    agregarMensaje("Friday", textResponse + sourcesHtml, 'msg-friday');
+                    agregarMensaje("Sistema", "Aviso: Friday no incluyó código HTML renderizable.", 'msg-system');
                 }
 
             } catch (error) {
-                const loadMsgElem = document.getElementById(loadMsgId);
-                if (loadMsgElem) loadMsgElem.remove();
-                
-                agregarMensaje("Sistema (Optimus)", `FALLO DE CONEXIÓN: ${error.message}`, 'msg-system');
-                dotFriday.classList.remove('thinking');
-                dotFriday.classList.add('error');
-                
-                conversationHistory.pop();
-            } finally {
-                // Restaurar indicador verde si no hay error
-                if(!dotFriday.classList.contains('error')){
-                    dotFriday.classList.remove('thinking');
-                    dotFriday.classList.add('active');
-                }
+                document.getElementById(loadMsgId).remove();
+                let friendlyMsg = error.message;
+                if (error.message.includes("API_KEY_INVALID")) friendlyMsg = "La llave ingresada es inválida o ha sido revocada por Google.";
+                agregarMensaje("Sistema (Optimus)", `Error en el flujo: ${friendlyMsg}`, 'msg-system');
+                conversationHistory.pop(); 
             }
         }
 
         button.addEventListener('click', procesarComando);
         input.addEventListener('keypress', (e) => { if (e.key === 'Enter') procesarComando(); });
 
-        document.querySelector('.brand-title').addEventListener('dblclick', () => {
-            localStorage.removeItem('nuve_gemini_key');
-            apiKey = null;
-            dotFriday.classList.remove('active', 'thinking', 'error');
-            apiModal.classList.remove('hidden');
-        });
     </script>
 </body>
 </html>
-
 
 ```
