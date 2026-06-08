@@ -8,7 +8,7 @@
         /* Paleta de colores extraída de la referencia */
         :root {
             --bg-color: #8ba3a7;       /* Azul-gris del fondo */
-            --text-main: #bde09c;      /* Tono verde/crema del reloj */
+            --text-main: #bde09c;      /* Tono verde/crema del reloj original */
             --text-light: #f3f0df;     /* Crema claro */
             --accent-red: #c06048;     /* Terracota/Rojo del edificio */
             --accent-cream: #d3beaa;   /* Crema de la estructura */
@@ -40,6 +40,7 @@
             flex-direction: column;
             align-items: flex-start;
             z-index: 10;
+            width: 320px;
         }
 
         .brand-title {
@@ -48,25 +49,54 @@
             color: var(--text-main);
             letter-spacing: -1px;
             line-height: 1;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
-        .friday-input-box {
+        /* Cuadro de texto interactivo para Friday */
+        .friday-interaction-box {
             background-color: rgba(243, 240, 239, 0.25);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 14px;
-            padding: 12px 24px;
-            min-width: 260px;
+            padding: 6px 12px;
+            width: 100%;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .friday-text {
+        .friday-input {
+            background: none;
+            border: none;
+            outline: none;
             color: var(--text-light);
-            font-size: 1.1rem;
-            font-weight: 400;
-            opacity: 0.9;
+            font-size: 1.05rem;
+            width: 100%;
+            font-family: inherit;
+        }
+
+        .friday-input::placeholder {
+            color: var(--text-light);
+            opacity: 0.8;
+        }
+
+        .friday-submit-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            cursor: pointer;
+            font-size: 1.2rem;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+
+        .friday-submit-btn:hover {
+            transform: scale(1.1);
         }
 
         /* Panel Lateral Derecho */
@@ -151,19 +181,25 @@
 
     <div class="main-container">
         <div class="brand-title">NUVE</div>
-        <div class="friday-input-box">
-            <span class="friday-text">Pregúntale a Friday</span>
+        
+        <div class="friday-interaction-box">
+            <input type="text" id="fridayInput" class="friday-input" placeholder="Pregúntale a Friday..." autocomplete="off">
+            <button id="sendBtn" class="friday-submit-btn" title="Enviar comando">➔</button>
         </div>
     </div>
 
     <div class="right-panel">
         <div class="widget">
-            <div class="widget-title">Sistema</div>
-            <div>Nuversions Labs v1.0</div>
+            <div class="widget-title">Core Engine</div>
+            <div>Nuversions Labs v1.1</div>
         </div>
         <div class="widget">
-            <div class="widget-title">Conexiones</div>
-            <div>Servidor Activo</div>
+            <div class="widget-title">Especialidad</div>
+            <div>Generador Web Automático</div>
+        </div>
+        <div class="widget">
+            <div class="widget-title">Consola JSON</div>
+            <div id="jsonStatus" style="font-family: monospace; font-size: 0.85rem; color: var(--text-main);">{ "status": "ready" }</div>
         </div>
     </div>
 
@@ -174,6 +210,36 @@
         <div class="geo-shape shape-right-shadow"></div>
     </div>
 
+    <script>
+        const input = document.getElementById('fridayInput');
+        const button = document.getElementById('sendBtn');
+        const jsonStatus = document.getElementById('jsonStatus');
+
+        function procesarComando() {
+            const comando = input.value.trim();
+            if (comando) {
+                // Simulación de estructuración JSON del asistente de negocios
+                const dataPayload = {
+                    agente: "Friday Core",
+                    solicitud: comando,
+                    timestamp: new Date().toLocaleTimeString()
+                };
+                
+                // Muestra la respuesta estructurada en el widget derecho
+                jsonStatus.textContent = JSON.stringify(dataPayload, null, 2);
+                
+                // Limpia el campo
+                input.value = '';
+            }
+        }
+
+        button.addEventListener('click', procesarComando);
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                procesarComando();
+            }
+        });
+    </script>
+
 </body>
 </html>
-
