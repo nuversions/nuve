@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuve - Centro de Mando</title>
     <style>
-        /* Paleta de colores extraída de la referencia */
+        /* Paleta de colores actualizada */
         :root {
-            --bg-color: #8ba3a7;       /* Azul-gris del fondo */
-            --text-main: #bde09c;      /* Tono verde/crema del reloj original */
+            --bg-color: #8ba3a7;       /* Azul cielo base */
+            --text-main: #f3f0df;      /* Crema claro para el título */
             --text-light: #f3f0df;     /* Crema claro */
-            --accent-red: #c06048;     /* Terracota/Rojo del edificio */
+            --accent-red: #c06048;     /* Rojo */
+            --accent-orange: #d97746;  /* Naranjo (nuevo) */
             --accent-cream: #d3beaa;   /* Crema de la estructura */
             --accent-shadow: #a27a64;  /* Sombra/Marrón de la estructura */
         }
@@ -34,37 +35,63 @@
         /* Área Principal Izquierda / Centro */
         .main-container {
             position: absolute;
-            top: 22%;
+            top: 25%;
             left: 35%;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
             z-index: 10;
-            width: 320px;
+            width: 380px;
         }
 
         .brand-title {
-            font-size: 4.5rem;
-            font-weight: 400;
+            font-size: 5rem;
+            font-weight: 700;
             color: var(--text-main);
-            letter-spacing: -1px;
+            letter-spacing: -2px;
             line-height: 1;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Cuadro de texto interactivo para Friday */
+        /* Especialidad reubicada */
+        .specialty-tag {
+            position: absolute;
+            top: 5%;
+            left: 5%;
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            z-index: 10;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        /* Nube Minimalista de Friday */
         .friday-interaction-box {
-            background-color: rgba(243, 240, 239, 0.25);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 14px;
-            padding: 6px 12px;
+            background-color: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            border-radius: 30px; /* Bordes más redondeados tipo nube */
+            padding: 10px 20px;
             width: 100%;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .friday-interaction-box:focus-within {
+            background-color: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
         }
 
         .friday-input {
@@ -72,66 +99,118 @@
             border: none;
             outline: none;
             color: var(--text-light);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
             width: 100%;
             font-family: inherit;
         }
 
         .friday-input::placeholder {
-            color: var(--text-light);
-            opacity: 0.8;
+            color: rgba(243, 240, 223, 0.7);
         }
 
         .friday-submit-btn {
-            background: none;
+            background-color: var(--accent-orange);
             border: none;
-            color: var(--text-main);
+            color: white;
             cursor: pointer;
             font-size: 1.2rem;
-            padding: 4px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.2s;
+            transition: transform 0.2s, background-color 0.2s;
         }
 
         .friday-submit-btn:hover {
             transform: scale(1.1);
+            background-color: var(--accent-red);
         }
 
-        /* Panel Lateral Derecho */
+        /* Panel de Asistencia al Usuario (Friday) */
         .right-panel {
             position: absolute;
             right: 4%;
-            top: 10%;
-            width: 280px;
+            top: 25%;
+            width: 320px;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 16px;
             z-index: 10;
-            align-items: flex-end;
         }
 
-        .widget {
-            background-color: rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 16px;
-            width: 100%;
+        .friday-assistant-panel {
+            background-color: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 20px;
             color: var(--text-light);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .widget-title {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            opacity: 0.5;
-            margin-bottom: 8px;
+        .assistant-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
+            padding-bottom: 10px;
         }
 
-        /* Estructura Geométrica Inferior */
+        .assistant-icon {
+            background-color: var(--accent-orange);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(217, 119, 70, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(217, 119, 70, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(217, 119, 70, 0); }
+        }
+
+        .assistant-title {
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .assistant-message {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            min-height: 60px;
+        }
+
+        /* Botones de sugerencia rápida */
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .chip {
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 15px;
+            padding: 6px 12px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .chip:hover {
+            background-color: rgba(255,255,255,0.3);
+            border-color: var(--accent-orange);
+        }
+
+        /* Estructura Geométrica Inferior (Actualizada a nueva paleta) */
         .landscape-background {
             position: absolute;
             bottom: 0;
@@ -148,30 +227,30 @@
             height: 100%;
         }
 
-        /* Bloque Izquierdo Rojo */
-        .shape-left-red {
-            background-color: var(--accent-red);
+        /* Bloque Izquierdo Naranjo */
+        .shape-left-orange {
+            background-color: var(--accent-orange);
             clip-path: polygon(0 62%, 56% 30%, 56% 100%, 0% 100%);
             z-index: 3;
         }
 
-        /* Columna de transición central */
+        /* Columna de transición central (Rojo intenso) */
         .shape-center-pillar {
-            background-color: #aa4e37;
+            background-color: #a33820;
             clip-path: polygon(56% 30%, 59% 33%, 59% 100%, 56% 100%);
             z-index: 4;
         }
 
-        /* Bloque Superior Crema */
+        /* Bloque Superior Rojo */
         .shape-right-top {
-            background-color: var(--accent-cream);
+            background-color: var(--accent-red);
             clip-path: polygon(59% 33%, 72% 0%, 100% 45%, 59% 33%);
             z-index: 2;
         }
 
         /* Bloque Derecho Sombra */
         .shape-right-shadow {
-            background-color: var(--accent-shadow);
+            background-color: #8b3c2a; /* Sombra rojiza */
             clip-path: polygon(59% 33%, 100% 45%, 100% 100%, 59% 100%);
             z-index: 1;
         }
@@ -179,32 +258,36 @@
 </head>
 <body>
 
+    <div class="specialty-tag">Generador Web Automático</div>
+
     <div class="main-container">
         <div class="brand-title">NUVE</div>
         
         <div class="friday-interaction-box">
             <input type="text" id="fridayInput" class="friday-input" placeholder="Pregúntale a Friday..." autocomplete="off">
-            <button id="sendBtn" class="friday-submit-btn" title="Enviar comando">➔</button>
+            <button id="sendBtn" class="friday-submit-btn" title="Enviar a Friday">➔</button>
         </div>
     </div>
 
     <div class="right-panel">
-        <div class="widget">
-            <div class="widget-title">Core Engine</div>
-            <div>Nuversions Labs v1.1</div>
-        </div>
-        <div class="widget">
-            <div class="widget-title">Especialidad</div>
-            <div>Generador Web Automático</div>
-        </div>
-        <div class="widget">
-            <div class="widget-title">Consola JSON</div>
-            <div id="jsonStatus" style="font-family: monospace; font-size: 0.85rem; color: var(--text-main);">{ "status": "ready" }</div>
+        <div class="friday-assistant-panel">
+            <div class="assistant-header">
+                <div class="assistant-icon"></div>
+                <div class="assistant-title">Asistencia Friday</div>
+            </div>
+            <div class="assistant-message" id="fridayMessage">
+                ¡Hola! Soy Friday. Estoy aquí para ayudarte a crear tu página web paso a paso. No necesitas saber programar. ¿De qué trata tu negocio o proyecto?
+            </div>
+            <div class="suggestion-chips" id="suggestionArea">
+                <button class="chip" onclick="fillInput('Es un portafolio de arte')">Portafolio</button>
+                <button class="chip" onclick="fillInput('Una tienda de coleccionables')">Tienda</button>
+                <button class="chip" onclick="fillInput('Solo quiero un blog personal')">Blog</button>
+            </div>
         </div>
     </div>
 
     <div class="landscape-background">
-        <div class="geo-shape shape-left-red"></div>
+        <div class="geo-shape shape-left-orange"></div>
         <div class="geo-shape shape-center-pillar"></div>
         <div class="geo-shape shape-right-top"></div>
         <div class="geo-shape shape-right-shadow"></div>
@@ -213,24 +296,56 @@
     <script>
         const input = document.getElementById('fridayInput');
         const button = document.getElementById('sendBtn');
-        const jsonStatus = document.getElementById('jsonStatus');
+        const messageDisplay = document.getElementById('fridayMessage');
+        const suggestionArea = document.getElementById('suggestionArea');
+
+        // Función para los botones rápidos
+        function fillInput(text) {
+            input.value = text;
+            procesarComando();
+        }
+
+        // Lógica simple para simular los pasos del asistente
+        let pasoActual = 0;
 
         function procesarComando() {
             const comando = input.value.trim();
-            if (comando) {
-                // Simulación de estructuración JSON del asistente de negocios
-                const dataPayload = {
-                    agente: "Friday Core",
-                    solicitud: comando,
-                    timestamp: new Date().toLocaleTimeString()
-                };
-                
-                // Muestra la respuesta estructurada en el widget derecho
-                jsonStatus.textContent = JSON.stringify(dataPayload, null, 2);
-                
-                // Limpia el campo
-                input.value = '';
+            if (!comando) return;
+
+            // Simulación del flujo de asistencia
+            if (pasoActual === 0) {
+                messageDisplay.innerHTML = `¡Excelente elección! Un proyecto sobre <strong>"${comando}"</strong>. <br><br>Paso 2: ¿Qué estilo de colores te gustaría usar?`;
+                suggestionArea.innerHTML = `
+                    <button class="chip" onclick="fillInput('Oscuro y elegante')">Oscuro y elegante</button>
+                    <button class="chip" onclick="fillInput('Claro y minimalista')">Claro y minimalista</button>
+                    <button class="chip" onclick="fillInput('Colores vibrantes')">Vibrantes</button>
+                `;
+                pasoActual++;
+            } else if (pasoActual === 1) {
+                messageDisplay.innerHTML = `Perfecto, estilo <strong>"${comando}"</strong> anotado. <br><br>Paso 3: Ahora, ¿cómo te gustaría llamar a tu página? (Ej: MiTienda.com)`;
+                suggestionArea.innerHTML = `
+                    <button class="chip" onclick="fillInput('Aún no lo sé, sugiéreme algo')">Sugiéreme algo</button>
+                `;
+                pasoActual++;
+            } else if (pasoActual === 2) {
+                messageDisplay.innerHTML = `¡Entendido! Estoy compilando la información.<br><br><em>Generando estructura base...</em><br>¡Tu plantilla inicial está casi lista!`;
+                suggestionArea.innerHTML = `
+                    <button class="chip" onclick="reiniciar()">Comenzar de nuevo</button>
+                `;
+                pasoActual++;
             }
+            
+            input.value = '';
+        }
+
+        function reiniciar() {
+            pasoActual = 0;
+            messageDisplay.innerHTML = `¡Hola de nuevo! Soy Friday. ¿De qué trata tu negocio o proyecto esta vez?`;
+            suggestionArea.innerHTML = `
+                <button class="chip" onclick="fillInput('Es un portafolio de arte')">Portafolio</button>
+                <button class="chip" onclick="fillInput('Una tienda de coleccionables')">Tienda</button>
+                <button class="chip" onclick="fillInput('Solo quiero un blog personal')">Blog</button>
+            `;
         }
 
         button.addEventListener('click', procesarComando);
